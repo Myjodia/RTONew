@@ -73,7 +73,7 @@ class _ClassPageState extends State<ClassPage> {
               childAspectRatio: 4,
               crossAxisCount: 2,
               children: values.keys.map((String key) {
-                return CheckboxListTile(      
+                return CheckboxListTile(
                     dense: true,
                     controlAffinity: ListTileControlAffinity.leading,
                     title: Text(key, style: TextStyle(fontSize: 13)),
@@ -81,10 +81,9 @@ class _ClassPageState extends State<ClassPage> {
                     onChanged: (bool value) {
                       setState(() {
                         values[key] = value;
-                        if(values[key]==true){
+                        if (values[key] == true) {
                           tmpArray.add(values);
-                        }
-                        else{
+                        } else {
                           tmpArray.remove(values);
                         }
                       });
@@ -116,7 +115,6 @@ class _ClassPageState extends State<ClassPage> {
                               iddocs: widget.iddocs,
                               applicantcard: widget.applicantcard,
                               count: tmpArray.length.toString(),
-
                             )));
                 print(widget.title +
                     '\t' +

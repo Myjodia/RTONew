@@ -4,10 +4,12 @@ import 'package:flutter/material.dart';
 import 'package:launch_review/launch_review.dart';
 import 'package:rto/ApiProvider/Apifile.dart';
 import 'package:rto/Model/ServiceCount.dart';
+import 'package:rto/Screen/CheckPostTaxUpload.dart';
 import 'package:rto/Screen/ClassPage.dart';
 import 'package:rto/Screen/ClassPageMultiple.dart';
 import 'package:rto/Screen/Login.dart';
 import 'package:rto/Screen/MultivehServicePage.dart';
+import 'package:rto/Screen/ProfessionalTaxUpload.dart';
 import 'package:rto/Screen/SingleFormPage.dart';
 import 'package:rto/Screen/SingleVehicleServicePage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -1158,6 +1160,37 @@ class _HomepageState extends State<Homepage> {
                       false,
                       false,
                       false),
+                  Container(
+                      height: 70,
+                      child: VerticalDivider(color: Colors.red[100])),
+                  Flexible(
+                    fit: FlexFit.tight,
+                    child: GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => Professionaltax(
+                                      title: 'Professional Tax',
+                                    )));
+                      },
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: <Widget>[
+                          Image.asset(
+                            'assets/images/mdl_noc.png',
+                            width: 40,
+                            height: 40,
+                          ),
+                          Text(
+                            'Professional Tax',
+                            style: TextStyle(fontSize: 11),
+                            textAlign: TextAlign.center,
+                          )
+                        ],
+                      ),
+                    ),
+                  ),
                 ],
               ),
             ],
@@ -1644,7 +1677,12 @@ class _HomepageState extends State<Homepage> {
       fit: FlexFit.tight,
       child: GestureDetector(
         onTap: () {
-          print(name);
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => CheckPostTax(
+                        title: name,
+                      )));
         },
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,

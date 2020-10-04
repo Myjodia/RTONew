@@ -206,13 +206,16 @@ class _SingleVehicleServicePageState extends State<SingleVehicleServicePage> {
                         )
                       : _loading
                           ? CupertinoActivityIndicator()
-                          : _submitbutton(snapshot.data.price);
+                          : snapshot.data.price == ''
+                              ? Container()
+                              : _submitbutton(int.parse(snapshot.data.price));
                 }),
           ],
         ));
   }
 
-  _submitbutton(String text) {
+  _submitbutton(int amount) {
+    print('amount= ' + amount.toString());
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 5),
       child: Container(
@@ -293,12 +296,12 @@ class _SingleVehicleServicePageState extends State<SingleVehicleServicePage> {
                 return;
               }
             }
-            _postuploadfile(text);
+            _postuploadfile(amount.toString());
           },
           shape: new RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(5)),
           child: Text(
-            text.contains('0') ? "Pay" : "Pay " + text,
+            amount == 0 ? "Pay ₹ 0" : "Pay ₹ " + amount.toString(),
             textAlign: TextAlign.center,
             style: TextStyle(
               color: Colors.white,

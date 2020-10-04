@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:rto/Screen/Homepage.dart';
+import 'package:rto/Screen/InformationTab.dart';
 import 'package:rto/Screen/Login.dart';
 import 'package:rto/Screen/Profiles.dart';
 import 'package:rto/Screen/Reports.dart';
@@ -30,6 +31,7 @@ class _DashBoardState extends State<DashBoard> {
   static List<Widget> _widgetOptions = <Widget>[
     Homepage(),
     Reports(),
+    InformationTab(),
     Profiles()
   ];
 
@@ -44,6 +46,7 @@ class _DashBoardState extends State<DashBoard> {
     return Scaffold(
       body: _widgetOptions.elementAt(_selectedIndex),
       bottomNavigationBar: BottomNavigationBar(
+        type: BottomNavigationBarType.fixed,
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
             icon: Icon(Icons.home),
@@ -52,6 +55,10 @@ class _DashBoardState extends State<DashBoard> {
           BottomNavigationBarItem(
             icon: Icon(Icons.receipt),
             title: Text('Reports'),
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.info),
+            title: Text('Information'),
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.person),
