@@ -46,7 +46,7 @@ class _HomepageState extends State<Homepage> {
   }
 
   Map<String, bool> values = {
-    'MDL Noc': false,
+    'NOC': false,
     'Renewal Licence': false,
     'Change of Date of Birth': false,
     'Endorsment Permanent Licence': false,
@@ -342,7 +342,7 @@ class _HomepageState extends State<Homepage> {
                       child: VerticalDivider(color: Colors.red[100])),
                   _licenseclassitem(
                       'assets/images/permanent_licence.png',
-                      'Permananent Licence',
+                      'Permanent Licence',
                       'Learning License',
                       '',
                       true,
@@ -443,7 +443,7 @@ class _HomepageState extends State<Homepage> {
                       child: VerticalDivider(color: Colors.red[100])),
                   _licenseserviceitems(
                       'assets/images/transfer_of_ownership.png',
-                      'change of Name of conductor licence',
+                      'Change of Name of Conductor Licence',
                       'Upload Gazette/Paper cutout',
                       'Upload Conductor license',
                       '',
@@ -464,7 +464,7 @@ class _HomepageState extends State<Homepage> {
                 children: <Widget>[
                   _licenseserviceitems(
                       'assets/images/permanent_licence.png',
-                      'Permenent Licence Retest',
+                      'Permanent Licence Retest',
                       '',
                       '',
                       '',
@@ -591,7 +591,7 @@ class _HomepageState extends State<Homepage> {
                       child: VerticalDivider(color: Colors.red[100])),
                   _vehicleserviceitems(
                       'assets/images/mdl_noc.png',
-                      'Dublicate RC',
+                      'Duplicate RC',
                       '',
                       '',
                       'Upload Police Report',
@@ -617,7 +617,7 @@ class _HomepageState extends State<Homepage> {
                 children: <Widget>[
                   _vehicleserviceitems(
                       'assets/images/transfer_of_ownership.png',
-                      'Transfer of Ownership',
+                      'Transfer Of Ownership',
                       '',
                       '',
                       '',
@@ -640,7 +640,7 @@ class _HomepageState extends State<Homepage> {
                       child: VerticalDivider(color: Colors.red[100])),
                   _vehicleserviceitems(
                       'assets/images/mdl_noc.png',
-                      'Noc',
+                      'NOC',
                       '',
                       '',
                       '',
@@ -663,7 +663,7 @@ class _HomepageState extends State<Homepage> {
                       child: VerticalDivider(color: Colors.red[100])),
                   _vehicleserviceitems(
                       'assets/images/fitness.png',
-                      'Dublicate Fitness',
+                      'Duplicate Fitness',
                       '',
                       '',
                       '',
@@ -693,7 +693,7 @@ class _HomepageState extends State<Homepage> {
                 children: <Widget>[
                   _vehicleserviceitems(
                       'assets/images/renewal_of_registration.png',
-                      'Renewal of Registration',
+                      'Renewal Of Registration',
                       '',
                       '',
                       '',
@@ -716,7 +716,7 @@ class _HomepageState extends State<Homepage> {
                       child: VerticalDivider(color: Colors.red[100])),
                   _vehicleserviceitems(
                       'assets/images/alteration_of_vehicle.png',
-                      'Alteration of Vehicle',
+                      'Alteration Of Vehicle',
                       '',
                       '',
                       '',
@@ -739,7 +739,7 @@ class _HomepageState extends State<Homepage> {
                       child: VerticalDivider(color: Colors.red[100])),
                   _vehicleserviceitems(
                       'assets/images/change_of_address.png',
-                      'Change of Adresss',
+                      'Change Of Address',
                       '',
                       '',
                       '',
@@ -788,7 +788,7 @@ class _HomepageState extends State<Homepage> {
                 children: <Widget>[
                   _vehicleserviceitems(
                       'assets/images/addition_of_hypo.png',
-                      'Addition of Financier',
+                      'Addition Of Financier',
                       'Upload Form34',
                       '',
                       '',
@@ -811,7 +811,7 @@ class _HomepageState extends State<Homepage> {
                       child: VerticalDivider(color: Colors.red[100])),
                   _vehicleserviceitems(
                       'assets/images/removal_hypo.png',
-                      'Removal of Financier',
+                      'Removal Of Financier',
                       'Upload Form35',
                       '',
                       '',
@@ -834,7 +834,7 @@ class _HomepageState extends State<Homepage> {
                       child: VerticalDivider(color: Colors.red[100])),
                   _vehicleserviceitems(
                       'assets/images/transfer_of_ownership.png',
-                      'Transfer of Ownership & Removal of Financier',
+                      'Transfer Of Ownership + Removal Financier',
                       'Upload Form35',
                       '',
                       '',
@@ -857,7 +857,7 @@ class _HomepageState extends State<Homepage> {
                       child: VerticalDivider(color: Colors.red[100])),
                   _vehicleserviceitems(
                       'assets/images/addition_of_hypo.png',
-                      'Transfer of ownership & Financier Termination & Financier Addition',
+                      'Transfer of Ownership & Financier Termination & Financier Addition',
                       'Upload Form34',
                       'Upload Form35',
                       '',
@@ -883,7 +883,7 @@ class _HomepageState extends State<Homepage> {
                 children: <Widget>[
                   _vehicleserviceitems(
                       'assets/images/mdl_noc.png',
-                      'Dublicate RC & Financier Termination',
+                      'Duplicate RC + Financier Termination',
                       'Upload Form35',
                       '',
                       'Upload Police Report',
@@ -906,7 +906,7 @@ class _HomepageState extends State<Homepage> {
                       child: VerticalDivider(color: Colors.red[100])),
                   _vehicleserviceitems(
                       'assets/images/mdl_noc.png',
-                      'Dublicate RC & Financier Addition',
+                      'Duplicate RC + Financier Addition',
                       'Upload Form35',
                       '',
                       'Upload Police Report',
@@ -929,7 +929,7 @@ class _HomepageState extends State<Homepage> {
                       child: VerticalDivider(color: Colors.red[100])),
                   _vehicleserviceitems(
                       'assets/images/mdl_noc.png',
-                      'Dublicate RC & Financier Addition & Financier Termination',
+                      'Duplicate RC + Financier Addition + Financier Termination',
                       'Upload Form34',
                       'Upload Form35',
                       'Upload Police Report',
@@ -952,7 +952,7 @@ class _HomepageState extends State<Homepage> {
                       child: VerticalDivider(color: Colors.red[100])),
                   _vehicleserviceitems(
                       'assets/images/transfer_of_ownership.png',
-                      'Transfer Ownership & Addition of Financier',
+                      'Transfer Of Ownership + Addition of Financier',
                       'Upload Form34',
                       '',
                       '',
@@ -1001,7 +1001,7 @@ class _HomepageState extends State<Homepage> {
                       child: VerticalDivider(color: Colors.red[100])),
                   _vehicleserviceitems(
                       'assets/images/national_permit_fee_payment.png',
-                      'Permit Fee',
+                      'National Permit Fee',
                       '',
                       '',
                       '',
@@ -1047,7 +1047,7 @@ class _HomepageState extends State<Homepage> {
                       child: VerticalDivider(color: Colors.red[100])),
                   _vehicleserviceitems(
                       'assets/images/surrender.png',
-                      'Withdraw App',
+                      'Withdraw Application',
                       '',
                       '',
                       '',
@@ -1096,7 +1096,7 @@ class _HomepageState extends State<Homepage> {
                       child: VerticalDivider(color: Colors.red[100])),
                   _vehicleserviceitems(
                       'assets/images/transfer_of_ownership.png',
-                      'Transfer of Ownership Financier Continuaiton',
+                      'Transfer of Ownership & Financier Continuation',
                       '',
                       '',
                       '',
@@ -1119,7 +1119,7 @@ class _HomepageState extends State<Homepage> {
                       child: VerticalDivider(color: Colors.red[100])),
                   _vehicleserviceitems(
                       'assets/images/removal_hypo.png',
-                      'Noc & Removal of Financier',
+                      'NOC + Removal Of Financier',
                       'Upload Form34',
                       '',
                       '',
@@ -1142,7 +1142,7 @@ class _HomepageState extends State<Homepage> {
                       child: VerticalDivider(color: Colors.red[100])),
                   _vehicleserviceitems(
                       'assets/images/mdl_noc.png',
-                      'New Registration Tax & Registration Fee',
+                      'New Registration Tax and Registration Fee',
                       '',
                       '',
                       '',
@@ -1217,7 +1217,7 @@ class _HomepageState extends State<Homepage> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
                   _multipleselectionlicenseitem(
-                      'assets/images/mdl_noc.png', 'MDL Noc'),
+                      'assets/images/mdl_noc.png', 'NOC'),
                   Container(
                       height: 60,
                       child: VerticalDivider(color: Colors.red[100])),

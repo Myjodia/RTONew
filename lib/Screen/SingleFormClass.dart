@@ -208,7 +208,7 @@ class _SingleFormClassState extends State<SingleFormClass> {
           shape: new RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(5)),
           child: Text(
-            amount == 0 ? "Pay ₹ 0" : "Pay ₹ " + amount.toString(),
+            amount == 0 ? "Submit" : "Pay ₹ " + amount.toString(),
             textAlign: TextAlign.center,
             style: TextStyle(
               color: Colors.white,

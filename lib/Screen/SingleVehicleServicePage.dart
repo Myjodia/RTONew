@@ -110,6 +110,11 @@ class _SingleVehicleServicePageState extends State<SingleVehicleServicePage> {
     'Comprehensive (Full Party)'
   ];
 
+  final List<String> _fitnessvehValues = [
+    'Bus - Below RLW - 7500 kgs',
+    'Bus - Above RLW - 7500 kgs',
+  ];
+
   String _selectedbp;
   String _selectedtypeveh;
   String _slctdtax;
@@ -133,10 +138,13 @@ class _SingleVehicleServicePageState extends State<SingleVehicleServicePage> {
     });
     FormData formData = FormData.fromMap({
       "state_name": 'Maharashtra',
-      "form_name": widget.title,
+      "form_name": widget.title.contains('Financier')
+          ? widget.title.replaceAll('Financier', 'Hypothecation')
+          : widget.title,
       "date": datetxt.contains('Select date') ? '' : datetxt,
       "vehicle": vehtype == null ? '' : vehtype,
     });
+    print(formData.fields);
     _price = ApiFile().getprice(formData);
   }
 
@@ -172,7 +180,11 @@ class _SingleVehicleServicePageState extends State<SingleVehicleServicePage> {
             widget.textbox1 ? _textboxcard1() : Container(),
             widget.taxservice ? _taxservicecard() : Container(),
             widget.insservice ? _insservicecard() : Container(),
-            widget.vehicletype ? _vehicletypecard() : Container(),
+            widget.vehicletype
+                ? widget.title.contains('Fitness of Vehicle')
+                    ? _fitnessvehicletypecard()
+                    : _vehicletypecard()
+                : Container(),
             FutureBuilder<Pricemodel>(
                 future: _price,
                 builder:
@@ -301,7 +313,7 @@ class _SingleVehicleServicePageState extends State<SingleVehicleServicePage> {
           shape: new RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(5)),
           child: Text(
-            amount == 0 ? "Pay ₹ 0" : "Pay ₹ " + amount.toString(),
+            amount == 0 ? "Submit" : "Pay ₹ " + amount.toString(),
             textAlign: TextAlign.center,
             style: TextStyle(
               color: Colors.white,
@@ -1552,6 +1564,61 @@ class _SingleVehicleServicePageState extends State<SingleVehicleServicePage> {
                       onChanged: (String value) {
                         setState(() {
                           _selectedtypeveh = value;
+                          _getprice(datetext, _selectedtypeveh);
+                        });
+                        print(_selectedtypeveh);
+                      },
+                      value: _selectedtypeveh,
+                      isExpanded: true,
+                      hint: Text('Select vehicle type'),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  _fitnessvehicletypecard() {
+    return Padding(
+      padding: const EdgeInsets.only(left: 16, right: 16, top: 5),
+      child: Card(
+        elevation: 3,
+        shadowColor: Theme.of(context).primaryColor,
+        child: Padding(
+          padding: const EdgeInsets.all(10.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Text('Choose Vehicle Type',
+                  style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w500,
+                      fontStyle: FontStyle.italic)),
+              Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 5, vertical: 10),
+                child: DropdownButtonHideUnderline(
+                  child: Container(
+                    padding: EdgeInsets.symmetric(horizontal: 10.0),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10.0),
+                      border: Border.all(color: Colors.black26),
+                    ),
+                    child: DropdownButton(
+                      items: _fitnessvehValues
+                          .map((value) => DropdownMenuItem(
+                                child: Text(value),
+                                value: value,
+                              ))
+                          .toList(),
+                      onChanged: (String value) {
+                        setState(() {
+                          _selectedtypeveh = value;
+                          _getprice(datetext, _selectedtypeveh);
                         });
                         print(_selectedtypeveh);
                       },
