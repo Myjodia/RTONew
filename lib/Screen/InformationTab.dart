@@ -67,17 +67,40 @@ class _InformationTabState extends State<InformationTab> {
                       itemCount: snapshot.data.service.length,
                       itemBuilder: (context, position) {
                         Service service = snapshot.data.service[position];
-                        return ExpansionTile(
-                          title: Text(
-                            service.serviceName,
-                            style: TextStyle(
-                                fontSize: 18.0, fontWeight: FontWeight.bold),
+                        return Padding(
+                          padding: const EdgeInsets.only(
+                              left: 8.0, right: 8.0, top: 8.0),
+                          child: Container(
+                            decoration: BoxDecoration(
+                                border: Border.all(
+                                    width: 2,
+                                    color: Theme.of(context).primaryColor)),
+                            child: ExpansionTile(
+                              expandedCrossAxisAlignment:
+                                  CrossAxisAlignment.start,
+                              title: Text(
+                                service.serviceName,
+                                style: TextStyle(
+                                    fontSize: 18.0,
+                                    fontWeight: FontWeight.bold),
+                              ),
+                              children: <Widget>[
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 16),
+                                  child: Text(
+                                    ' Answer ',
+                                    style: TextStyle(
+                                        backgroundColor: Colors.blue,
+                                        color: Colors.white),
+                                  ),
+                                ),
+                                ListTile(
+                                  title: Text(service.serviceInfo),
+                                )
+                              ],
+                            ),
                           ),
-                          children: <Widget>[
-                            ListTile(
-                              title: Text(service.serviceInfo),
-                            )
-                          ],
                         );
                       },
                     );

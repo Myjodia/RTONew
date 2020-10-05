@@ -79,7 +79,7 @@ class _ReportsState extends State<Reports> {
                 return Container();
               else if (snapshot.connectionState == ConnectionState.waiting)
                 return Container(
-                    height: MediaQuery.of(context).size.height-100,
+                    height: MediaQuery.of(context).size.height - 100,
                     child: Center(
                         child: CupertinoActivityIndicator(
                       radius: 30,
@@ -89,7 +89,7 @@ class _ReportsState extends State<Reports> {
               users = snapshot.data.transactions;
               return snapshot.data.transactions == null
                   ? Container(
-                      height: MediaQuery.of(context).size.height-100,
+                      height: MediaQuery.of(context).size.height - 100,
                       width: MediaQuery.of(context).size.width,
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.center,
@@ -118,97 +118,106 @@ class _ReportsState extends State<Reports> {
                         ],
                       ),
                     )
-                  : SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      child: DataTable(
-                          columnSpacing: 10,
-                          sortAscending: sort,
-                          sortColumnIndex: 4,
-                          columns: [
-                            DataColumn(
-                                label: Text('Date\nTime',
-                                    style: TextStyle(
-                                        color: Theme.of(context).primaryColor,
-                                        fontSize: 13))),
-                            DataColumn(
-                                label: Text('Payment',
-                                    style: TextStyle(
-                                        color: Theme.of(context).primaryColor,
-                                        fontSize: 13))),
-                            DataColumn(
-                                tooltip: 'Service',
-                                numeric: false,
-                                label: Text('Service',
-                                    style: TextStyle(
-                                        color: Theme.of(context).primaryColor,
-                                        fontSize: 13))),
-                            DataColumn(
-                                label: Text('Transaction id',
-                                    style: TextStyle(
-                                        color: Theme.of(context).primaryColor,
-                                        fontSize: 13))),
-                            DataColumn(
-                                onSort: (columnIndex, ascending) {
-                                  setState(() {
-                                    sort = !sort;
-                                  });
-                                  onSortColum(columnIndex, ascending);
-                                },
-                                label: Text('Form Status',
-                                    style: TextStyle(
-                                        color: Theme.of(context).primaryColor,
-                                        fontSize: 13)))
-                          ],
-                          rows: users
-                              .map((user) => DataRow(cells: [
-                                    DataCell(Center(
-                                      child: Text(user.date + '\n' + user.time,
-                                          style: TextStyle(fontSize: 11)),
-                                    )),
-                                    DataCell(
-                                        Center(
-                                          child: Text(user.payment,
-                                              style: TextStyle(
-                                                  fontSize: 11,
-                                                  color: user.paymentStatus
-                                                          .contains('Pending')
-                                                      ? Theme.of(context)
-                                                          .primaryColor
-                                                      : Colors.green)),
-                                        ), onTap: () {
-                                      setState(() {
-                                        servicename =
-                                            user.formName.replaceAll(',', '\n');
-                                        amount = user.payment;
-                                        transid = user.transactionalId;
-                                      });
-                                      _paymentdailog(
-                                          user.transactionalId,
-                                          user.paymentStatus.contains('Pending')
-                                              ? 'Pending'
-                                              : 'Thank You!',
-                                          user.paymentStatus.contains('Pending')
-                                              ? 'Your Payment is Pending'
-                                              : 'Your transaction was successful',
-                                          user.date,
-                                          user.time,
-                                          user.formStatus);
-                                    }),
-                                    DataCell(Text(
-                                        user.formName.replaceAll(',', '\n'),
+                  : DataTable(
+                      columnSpacing: 5,
+                      sortAscending: sort,
+                      sortColumnIndex: 4,
+                      horizontalMargin: 10,
+                      columns: [
+                        DataColumn(
+                            label: Text('Date\nTime',
+                                style: TextStyle(
+                                    color: Theme.of(context).primaryColor,
+                                    fontSize: 12))),
+                        DataColumn(
+                            tooltip: 'Service',
+                            label: Center(
+                              child: Text('Service',
+                                  style: TextStyle(
+                                      color: Theme.of(context).primaryColor,
+                                      fontSize: 12)),
+                            )),
+                        DataColumn(
+                            label: Text('Payment',
+                                style: TextStyle(
+                                    color: Theme.of(context).primaryColor,
+                                    fontSize: 12))),
+                        DataColumn(
+                            numeric: false,
+                            label: Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 8),
+                              child: Text('Transaction id',
+                                  style: TextStyle(
+                                      color: Theme.of(context).primaryColor,
+                                      fontSize: 12)),
+                            )),
+                        DataColumn(
+                            onSort: (columnIndex, ascending) {
+                              setState(() {
+                                sort = !sort;
+                              });
+                              onSortColum(columnIndex, ascending);
+                            },
+                            label: Text('Form Status',
+                                style: TextStyle(
+                                    color: Theme.of(context).primaryColor,
+                                    fontSize: 12)))
+                      ],
+                      rows: users
+                          .map((user) => DataRow(cells: [
+                                DataCell(Center(
+                                  child: Text(user.date + '\n' + user.time,
+                                      style: TextStyle(fontSize: 10)),
+                                )),
+                                DataCell(Container(
+                                  width: 60,
+                                  child: Padding(
+                                    padding: const EdgeInsets.only(left: 5),
+                                    child: Text(user.formName,
                                         style: TextStyle(
-                                            fontSize: 9, color: Colors.amber))),
-                                    DataCell(Center(
-                                      child: Text(user.transactionalId,
-                                          style: TextStyle(fontSize: 11)),
-                                    )),
-                                    DataCell(Center(
-                                      child: Text(user.formStatus,
-                                          style: TextStyle(fontSize: 11)),
-                                    ))
-                                  ]))
-                              .toList()),
-                    );
+                                            fontSize: 9, color: Colors.amber)),
+                                  ),
+                                )),
+                                DataCell(
+                                    Center(
+                                      child: Text(user.payment,
+                                          style: TextStyle(
+                                              fontSize: 10,
+                                              color: user.paymentStatus
+                                                      .contains('Pending')
+                                                  ? Theme.of(context)
+                                                      .primaryColor
+                                                  : Colors.green)),
+                                    ), onTap: () {
+                                  setState(() {
+                                    servicename =
+                                        user.formName.replaceAll(',', '\n');
+                                    amount = user.payment;
+                                    transid = user.transactionalId;
+                                  });
+                                  _paymentdailog(
+                                      user.transactionalId,
+                                      user.paymentStatus.contains('Pending')
+                                          ? 'Pending'
+                                          : 'Thank You!',
+                                      user.paymentStatus.contains('Pending')
+                                          ? 'Your Payment is Pending'
+                                          : 'Your transaction was successful',
+                                      user.date,
+                                      user.time,
+                                      user.formStatus);
+                                }),
+                                DataCell(Center(
+                                  child: Text(user.transactionalId,
+                                      style: TextStyle(fontSize: 10)),
+                                )),
+                                DataCell(Center(
+                                  child: Text(user.formStatus,
+                                      style: TextStyle(fontSize: 10)),
+                                ))
+                              ]))
+                          .toList());
             }),
       ),
     );
