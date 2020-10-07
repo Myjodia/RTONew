@@ -8,6 +8,7 @@ import 'package:razorpay_flutter/razorpay_flutter.dart';
 import 'package:rto/ApiProvider/Apifile.dart';
 import 'package:rto/Model/Transaction.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class Reports extends StatefulWidget {
   @override
@@ -84,7 +85,6 @@ class _ReportsState extends State<Reports> {
                         child: CupertinoActivityIndicator(
                       radius: 30,
                     )));
-              print("data" + snapshot.data.transactions.toString());
 
               users = snapshot.data.transactions;
               return snapshot.data.transactions == null
@@ -118,112 +118,135 @@ class _ReportsState extends State<Reports> {
                         ],
                       ),
                     )
-                  : DataTable(
-                      columnSpacing: 5,
-                      sortAscending: sort,
-                      sortColumnIndex: 4,
-                      horizontalMargin: 10,
-                      columns: [
-                        DataColumn(
-                            label: Text('Date\nTime',
-                                style: TextStyle(
-                                    color: Theme.of(context).primaryColor,
-                                    fontSize: 12))),
-                        DataColumn(
-                            tooltip: 'Service',
-                            label: Center(
-                              child: Text('Service',
-                                  style: TextStyle(
-                                      color: Theme.of(context).primaryColor,
-                                      fontSize: 12)),
-                            )),
-                        DataColumn(
-                            label: Text('Payment',
-                                style: TextStyle(
-                                    color: Theme.of(context).primaryColor,
-                                    fontSize: 12))),
-                        DataColumn(
-                            numeric: false,
-                            label: Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 8),
-                              child: Text('Transaction id',
-                                  style: TextStyle(
-                                      color: Theme.of(context).primaryColor,
-                                      fontSize: 12)),
-                            )),
-                        DataColumn(
-                            onSort: (columnIndex, ascending) {
-                              setState(() {
-                                sort = !sort;
-                              });
-                              onSortColum(columnIndex, ascending);
-                            },
-                            label: Text('Form Status',
-                                style: TextStyle(
-                                    color: Theme.of(context).primaryColor,
-                                    fontSize: 12)))
-                      ],
-                      rows: users
-                          .map((user) => DataRow(cells: [
-                                DataCell(Center(
-                                  child: Text(user.date + '\n' + user.time,
-                                      style: TextStyle(fontSize: 10)),
+                  : SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: DataTable(
+                          columnSpacing: 5,
+                          sortAscending: sort,
+                          sortColumnIndex: 4,
+                          horizontalMargin: 10,
+                          columns: [
+                            DataColumn(
+                                label: Text('Date\nTime',
+                                    style: TextStyle(
+                                        color: Theme.of(context).primaryColor,
+                                        fontSize: 12))),
+                            DataColumn(
+                                tooltip: 'Service',
+                                label: Center(
+                                  child: Text('Service',
+                                      style: TextStyle(
+                                          color: Theme.of(context).primaryColor,
+                                          fontSize: 12)),
                                 )),
-                                DataCell(Container(
-                                  width: 60,
-                                  child: Padding(
-                                    padding: const EdgeInsets.only(left: 5),
-                                    child: Text(user.formName,
-                                        style: TextStyle(
-                                            fontSize: 9, color: Colors.amber)),
-                                  ),
+                            DataColumn(
+                                label: Text('Payment',
+                                    style: TextStyle(
+                                        color: Theme.of(context).primaryColor,
+                                        fontSize: 12))),
+                            DataColumn(
+                                numeric: false,
+                                label: Padding(
+                                  padding:
+                                      const EdgeInsets.symmetric(horizontal: 8),
+                                  child: Text('Transaction id',
+                                      style: TextStyle(
+                                          color: Theme.of(context).primaryColor,
+                                          fontSize: 12)),
                                 )),
-                                DataCell(
-                                    Center(
-                                      child: Text(user.payment,
-                                          style: TextStyle(
-                                              fontSize: 10,
-                                              color: user.paymentStatus
-                                                      .contains('Pending')
-                                                  ? Theme.of(context)
-                                                      .primaryColor
-                                                  : Colors.green)),
-                                    ), onTap: () {
+                            DataColumn(
+                                onSort: (columnIndex, ascending) {
                                   setState(() {
-                                    servicename =
-                                        user.formName.replaceAll(',', '\n');
-                                    amount = user.payment;
-                                    transid = user.transactionalId;
+                                    sort = !sort;
                                   });
-                                  _paymentdailog(
-                                      user.transactionalId,
-                                      user.paymentStatus.contains('Pending')
-                                          ? 'Pending'
-                                          : 'Thank You!',
-                                      user.paymentStatus.contains('Pending')
-                                          ? 'Your Payment is Pending'
-                                          : 'Your transaction was successful',
-                                      user.date,
-                                      user.time,
-                                      user.formStatus);
-                                }),
-                                DataCell(Center(
-                                  child: Text(user.transactionalId,
-                                      style: TextStyle(fontSize: 10)),
-                                )),
-                                DataCell(Center(
-                                  child: Text(user.formStatus,
-                                      style: TextStyle(fontSize: 10)),
-                                ))
-                              ]))
-                          .toList());
+                                  onSortColum(columnIndex, ascending);
+                                },
+                                label: Text('Form Status',
+                                    style: TextStyle(
+                                        color: Theme.of(context).primaryColor,
+                                        fontSize: 12)))
+                          ],
+                          rows: users
+                              .map((user) => DataRow(cells: [
+                                    DataCell(
+                                        Center(
+                                          child: Text(
+                                              user.date + '\n' + user.time,
+                                              style: TextStyle(fontSize: 10)),
+                                        ), onTap: () {
+                                      _showpaydialog(user);
+                                      setState(() {
+                                        servicename =
+                                            user.formName.replaceAll(',', '\n');
+                                        amount = user.payment;
+                                        transid = user.transactionalId;
+                                      });
+                                    }),
+                                    DataCell(
+                                        Container(
+                                          width: 60,
+                                          child: Padding(
+                                            padding:
+                                                const EdgeInsets.only(left: 5),
+                                            child: Text(user.formName,
+                                                style: TextStyle(
+                                                    fontSize: 9,
+                                                    color: Colors.amber)),
+                                          ),
+                                        ), onTap: () {
+                                      _showpaydialog(user);
+                                      setState(() {
+                                        servicename =
+                                            user.formName.replaceAll(',', '\n');
+                                        amount = user.payment;
+                                        transid = user.transactionalId;
+                                      });
+                                    }),
+                                    DataCell(
+                                        Center(
+                                          child: Text(user.payment,
+                                              style: TextStyle(
+                                                  fontSize: 10,
+                                                  color: user.paymentStatus
+                                                          .contains('Pending')
+                                                      ? Theme.of(context)
+                                                          .primaryColor
+                                                      : Colors.green)),
+                                        ), onTap: () {
+                                      _showpaydialog(user);
+                                      setState(() {
+                                        servicename =
+                                            user.formName.replaceAll(',', '\n');
+                                        amount = user.payment;
+                                        transid = user.transactionalId;
+                                      });
+                                    }),
+                                    DataCell(
+                                        Center(
+                                          child: Text(user.transactionalId,
+                                              style: TextStyle(fontSize: 10)),
+                                        ), onTap: () {
+                                      _showpaydialog(user);
+                                      setState(() {
+                                        servicename =
+                                            user.formName.replaceAll(',', '\n');
+                                        amount = user.payment;
+                                        transid = user.transactionalId;
+                                      });
+                                    }),
+                                    DataCell(Center(
+                                      child: Text(user.formStatus,
+                                          style: TextStyle(fontSize: 10)),
+                                    ))
+                                  ]))
+                              .toList()),
+                    );
             }),
       ),
     );
   }
 
-  _paymentdailog(transid, title, msg, date, time, status) {
+  _paymentdailog(transid, title, msg, date, time, status, url) {
     showDialog(
         // barrierColor: Theme.of(context).primaryColor,
         useSafeArea: true,
@@ -235,31 +258,6 @@ class _ReportsState extends State<Reports> {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                // Container(
-                //   height: 50,
-                //   decoration: new BoxDecoration(
-                //       color: Theme.of(context).primaryColor,
-                //       borderRadius: new BorderRadius.only(
-                //           topLeft: const Radius.circular(15.0),
-                //           topRight: const Radius.circular(15.0))),
-                //   child: Row(
-                //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                //     children: <Widget>[
-                //       IconButton(
-                //           icon: Icon(Icons.close, color: Colors.white),
-                //           onPressed: () {
-                //             Navigator.of(context).pop();
-                //           }),
-                //       Text(
-                //         'Payment',
-                //         style: TextStyle(
-                //             color: Colors.white,
-                //             fontSize: 18,
-                //             fontWeight: FontWeight.bold),
-                //       ),
-                //     ],
-                //   ),
-                // ),
                 Column(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
@@ -325,11 +323,29 @@ class _ReportsState extends State<Reports> {
                                           'Please Wait... we proceeding')));
                               _openCheckout(amount, servicename);
                             })
-                        : Container(
-                            height: 50,
-                            child: Center(
-                                child: Text('Transaction id : ' + transid)),
-                          ),
+                        : status.contains('Completed')
+                            ? Column(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceEvenly,
+                                children: [
+                                  Text('Transaction id : ' + transid),
+                                  RaisedButton(
+                                      child: Text(
+                                        'View Document',
+                                        style: TextStyle(color: Colors.white),
+                                      ),
+                                      color: Theme.of(context).primaryColor,
+                                      onPressed: () {
+                                        _launchURL(
+                                            'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf');
+                                      })
+                                ],
+                              )
+                            : Container(
+                                height: 50,
+                                child: Center(
+                                    child: Text('Transaction id : ' + transid)),
+                              ),
                     Container(
                       height: 10,
                     )
@@ -339,6 +355,27 @@ class _ReportsState extends State<Reports> {
             ),
           );
         });
+  }
+
+  _launchURL(String url) async {
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      throw 'Could not launch $url';
+    }
+  }
+
+  _showpaydialog(Transactions user) {
+    _paymentdailog(
+        user.transactionalId,
+        user.paymentStatus.contains('Pending') ? 'Pending' : 'Thank You!',
+        user.paymentStatus.contains('Pending')
+            ? 'Your Payment is Pending'
+            : 'Your transaction was successful',
+        user.date,
+        user.time,
+        user.formStatus,
+        user.completedPdf);
   }
 
   _paymenterrordailog() {
@@ -353,31 +390,6 @@ class _ReportsState extends State<Reports> {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                // Container(
-                //   height: 50,
-                //   decoration: new BoxDecoration(
-                //       color: Theme.of(context).primaryColor,
-                //       borderRadius: new BorderRadius.only(
-                //           topLeft: const Radius.circular(15.0),
-                //           topRight: const Radius.circular(15.0))),
-                //   child: Row(
-                //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                //     children: <Widget>[
-                //       IconButton(
-                //           icon: Icon(Icons.close, color: Colors.white),
-                //           onPressed: () {
-                //             Navigator.of(context).pop();
-                //           }),
-                //       Text(
-                //         'Payment',
-                //         style: TextStyle(
-                //             color: Colors.white,
-                //             fontSize: 18,
-                //             fontWeight: FontWeight.bold),
-                //       ),
-                //     ],
-                //   ),
-                // ),
                 Column(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
@@ -385,10 +397,7 @@ class _ReportsState extends State<Reports> {
                     Text(
                       'Failed',
                       style: TextStyle(
-                          fontSize: 20,
-                          color: title.contains('Pending')
-                              ? Theme.of(context).primaryColor
-                              : Colors.green),
+                          fontSize: 20, color: Theme.of(context).primaryColor),
                     ),
                     Text(
                       'Your payment failed try again!!',
@@ -402,14 +411,15 @@ class _ReportsState extends State<Reports> {
                       title: Text(
                         'DATE',
                       ),
-                      subtitle: Text(date),
+                      subtitle: Text(DateFormat.yMd().format(DateTime.now())),
                       trailing: Column(
                         children: [
                           Text(
                             'TIME',
                             style: TextStyle(fontSize: 16),
                           ),
-                          Text(time, style: TextStyle(color: Colors.black54)),
+                          Text(DateFormat.jm().format(DateTime.now()),
+                              style: TextStyle(color: Colors.black54)),
                         ],
                       ),
                     ),
@@ -428,28 +438,22 @@ class _ReportsState extends State<Reports> {
                       ),
                       trailing: Column(
                         children: [
-                          Text(status),
+                          Text('Pending'),
                         ],
                       ),
                     ),
-                    title.contains('Pending') || title.contains('Failed')
-                        ? RaisedButton(
-                            child: Text(
-                              'Pay Now',
-                              style: TextStyle(color: Colors.white),
-                            ),
-                            color: Theme.of(context).primaryColor,
-                            onPressed: () {
-                              Navigator.of(context).pop();
-                              _scaffoldKey.currentState.showSnackBar(
-                                  new SnackBar(content: Text('Please Wait')));
-                              _openCheckout(amount, servicename);
-                            })
-                        : Container(
-                            height: 50,
-                            child: Center(
-                                child: Text('Transaction id : ' + transid)),
-                          ),
+                    RaisedButton(
+                        child: Text(
+                          'Retry',
+                          style: TextStyle(color: Colors.white),
+                        ),
+                        color: Theme.of(context).primaryColor,
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                          _scaffoldKey.currentState.showSnackBar(
+                              new SnackBar(content: Text('Please Wait')));
+                          _openCheckout(amount, servicename);
+                        }),
                     Container(
                       height: 10,
                     )
@@ -484,8 +488,14 @@ class _ReportsState extends State<Reports> {
     var currentdate = new DateFormat('dd-MM-yyyy');
     var currentime = new DateFormat.jm().format(now);
     String formattedDate = currentdate.format(now);
-    _paymentdailog(response.paymentId, 'Thank You!',
-        'Your transaction was successful', formattedDate, currentime, 'Sucess');
+    _paymentdailog(
+        response.paymentId,
+        'Thank You!',
+        'Your transaction was successful',
+        formattedDate,
+        currentime,
+        'Sucess',
+        '');
     FormData tformData = FormData.fromMap({
       "new_t_id": response.paymentId,
       "t_id": transid,
