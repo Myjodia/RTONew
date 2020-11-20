@@ -20,6 +20,9 @@ class Professionaltax extends StatefulWidget {
 
 class _ProfessionaltaxState extends State<Professionaltax> {
   final _applicantcontroller = new TextEditingController();
+  final _taxicontroller = new TextEditingController();
+  final _truckcontroller = new TextEditingController();
+  final _buscontroller = new TextEditingController();
   GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   File image1file;
@@ -29,23 +32,29 @@ class _ProfessionaltaxState extends State<Professionaltax> {
   Random random = new Random();
   String samount;
   int transid;
+  String taxirate;
+  String goodsrate;
+  String busrate;
+  bool taxivalue = false;
+  bool goodstruckvalue = false;
+  bool busvalue = false;
 
-  Map<String, bool> values = {
-    "Taxi": false,
-    "Goods truck": false,
-    "Bus": false
-  };
+  // Map<String, bool> values = {
+  //   "Taxi": false,
+  //   "Goods truck": false,
+  //   "Bus": false
+  // };
 
   var tmpArray = [];
-  getCheckboxItems() {
-    tmpArray.clear();
-    values.forEach((key, value) {
-      if (value == true) {
-        tmpArray.add(key);
-      }
-    });
-    print(tmpArray);
-  }
+  // getCheckboxItems() {
+  //   tmpArray.clear();
+  //   values.forEach((key, value) {
+  //     if (value == true) {
+  //       tmpArray.add(key);
+  //     }
+  //   });
+  //   print(tmpArray);
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -225,28 +234,172 @@ class _ProfessionaltaxState extends State<Professionaltax> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('Which vehcile do you have?',
+              Text('Which vehicle do you have?',
                   style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.w500,
                       fontStyle: FontStyle.italic)),
-              GridView.count(
-                  shrinkWrap: true,
-                  scrollDirection: Axis.vertical,
-                  childAspectRatio: 5,
-                  crossAxisCount: 2,
-                  children: values.keys.map((String key) {
-                    return CheckboxListTile(
+              Row(
+                children: [
+                  Expanded(
+                    child: CheckboxListTile(
                         dense: true,
                         controlAffinity: ListTileControlAffinity.leading,
-                        title: Text(key, style: TextStyle(fontSize: 13)),
-                        value: values[key],
+                        title: Text('Taxi', style: TextStyle(fontSize: 13)),
+                        value: taxivalue,
                         onChanged: (bool value) {
                           setState(() {
-                            values[key] = value;
+                            taxivalue = value;
                           });
-                        });
-                  }).toList()),
+                        }),
+                  ),
+                  Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.all(5.0),
+                      child: TextField(
+                        controller: _taxicontroller,
+                        keyboardType: TextInputType.number,
+                        inputFormatters: <TextInputFormatter>[
+                          WhitelistingTextInputFormatter.digitsOnly
+                        ],
+                        onChanged: (texts) {
+                          int text = int.parse(texts);
+                          if (text == 1) {
+                            taxirate = '1000';
+                          } else if (text > 1) {
+                            taxirate = '2500';
+                          }
+                          print(taxirate);
+                        },
+                        style: TextStyle(
+                            color: Theme.of(context).primaryColor,
+                            fontSize: 15),
+                        decoration: InputDecoration(
+                            contentPadding: EdgeInsets.all(10),
+                            enabledBorder: OutlineInputBorder(
+                                borderSide: BorderSide(
+                                    color: Theme.of(context).primaryColor)),
+                            focusedBorder: OutlineInputBorder(
+                                borderSide: BorderSide(
+                                    color: Theme.of(context).primaryColor)),
+                            hintText: 'Enter Taxi Count.'),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              Row(
+                children: [
+                  Expanded(
+                    child: CheckboxListTile(
+                        dense: true,
+                        controlAffinity: ListTileControlAffinity.leading,
+                        title:
+                            Text('Goods truck', style: TextStyle(fontSize: 13)),
+                        value: goodstruckvalue,
+                        onChanged: (bool value) {
+                          setState(() {
+                            goodstruckvalue = value;
+                          });
+                        }),
+                  ),
+                  Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.all(5.0),
+                      child: TextField(
+                        controller: _truckcontroller,
+                        keyboardType: TextInputType.number,
+                        inputFormatters: <TextInputFormatter>[
+                          WhitelistingTextInputFormatter.digitsOnly
+                        ],
+                        onChanged: (text) {
+                          if (text.contains('1')) {
+                            goodsrate = '1500';
+                          } else {
+                            goodsrate = '2500';
+                          }
+                        },
+                        style: TextStyle(
+                            color: Theme.of(context).primaryColor,
+                            fontSize: 15),
+                        decoration: InputDecoration(
+                            contentPadding: EdgeInsets.all(10),
+                            enabledBorder: OutlineInputBorder(
+                                borderSide: BorderSide(
+                                    color: Theme.of(context).primaryColor)),
+                            focusedBorder: OutlineInputBorder(
+                                borderSide: BorderSide(
+                                    color: Theme.of(context).primaryColor)),
+                            hintText: 'Enter Truck Count.'),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              Row(
+                children: [
+                  Expanded(
+                    child: CheckboxListTile(
+                        dense: true,
+                        controlAffinity: ListTileControlAffinity.leading,
+                        title: Text('Bus', style: TextStyle(fontSize: 13)),
+                        value: busvalue,
+                        onChanged: (bool value) {
+                          setState(() {
+                            busvalue = value;
+                          });
+                        }),
+                  ),
+                  Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.all(5.0),
+                      child: TextField(
+                        controller: _buscontroller,
+                        keyboardType: TextInputType.number,
+                        inputFormatters: <TextInputFormatter>[
+                          WhitelistingTextInputFormatter.digitsOnly
+                        ],
+                        onChanged: (text) {
+                          if (text.contains('1')) {
+                            busrate = '1500';
+                          } else {
+                            busrate = '2500';
+                          }
+                        },
+                        style: TextStyle(
+                            color: Theme.of(context).primaryColor,
+                            fontSize: 15),
+                        decoration: InputDecoration(
+                            contentPadding: EdgeInsets.all(10),
+                            enabledBorder: OutlineInputBorder(
+                                borderSide: BorderSide(
+                                    color: Theme.of(context).primaryColor)),
+                            focusedBorder: OutlineInputBorder(
+                                borderSide: BorderSide(
+                                    color: Theme.of(context).primaryColor)),
+                            hintText: 'Enter Bus Count.'),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              //   GridView.count(
+              //       shrinkWrap: true,
+              //       scrollDirection: Axis.vertical,
+              //       childAspectRatio: 5,
+              //       crossAxisCount: 1,
+              //       children: values.keys.map((String key) {
+              //         return CheckboxListTile(
+              //             dense: true,
+              //             controlAffinity: ListTileControlAffinity.leading,
+              //             title: Text(key, style: TextStyle(fontSize: 13)),
+              //             value: values[key],
+              //             onChanged: (bool value) {
+              //               setState(() {
+              //                 values[key] = value;
+              //               });
+              //             });
+              //       }).toList()),
             ],
           ),
         ),
@@ -263,14 +416,31 @@ class _ProfessionaltaxState extends State<Professionaltax> {
         child: RaisedButton(
           color: Theme.of(context).primaryColor,
           onPressed: () {
-            getCheckboxItems();
+            // getCheckboxItems();
             if (_applicantcontroller.text == '') {
               _showtoast('Please enter customer no');
-            } else if (tmpArray.isEmpty) {
-              _showtoast("Please select any vehicle first!!");
+              // } else if (tmpArray.isEmpty) {
+              //   _showtoast("Please select any vehicle first!!");
+            } else if (!taxivalue && !goodstruckvalue && !busvalue) {
+              _showtoast('Please select any vehicle to proceed');
+            } else if (taxivalue && _taxicontroller.text == '') {
+              _showtoast('Please enter taxi count');
+            } else if (goodstruckvalue && _truckcontroller.text == '') {
+              _showtoast('Please enter goods count');
+            } else if (busvalue && _buscontroller.text == '') {
+              _showtoast('Please enter bus count');
             } else if (image1file == null) {
               _showtoast('Please select pancard');
             } else {
+              if (taxivalue) {
+                tmpArray.add('Taxi' + '_' + taxirate);
+              }
+              if (goodstruckvalue) {
+                tmpArray.add('Goods truck' + '_' + goodsrate);
+              }
+              if (busvalue) {
+                tmpArray.add('Bus' + '_' +busrate);
+              }
               _uploaddata();
             }
           },

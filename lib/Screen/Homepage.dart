@@ -330,9 +330,9 @@ class _HomepageState extends State<Homepage> {
                   _licenseclassitem(
                       'assets/images/learning_licence.png',
                       'Learning Licence',
-                      'Upload Medical Doc',
                       '',
-                      true,
+                      '',
+                      false,
                       false,
                       true,
                       true,
@@ -357,9 +357,9 @@ class _HomepageState extends State<Homepage> {
                       'assets/images/endosment_permenent_licence.png',
                       'Endorsment Learning Licence',
                       'Upload Motor License',
-                      'Upload Medical License',
+                      '',
                       true,
-                      true,
+                      false,
                       false,
                       false,
                       true),
@@ -1078,14 +1078,14 @@ class _HomepageState extends State<Homepage> {
                       '',
                       '',
                       'Vehicle No',
-                      '',
+                      'Chasis No',
                       false,
                       false,
                       false,
                       false,
                       false,
                       true,
-                      false,
+                      true,
                       true,
                       false,
                       false,
@@ -1354,7 +1354,7 @@ class _HomepageState extends State<Homepage> {
                       if (tmpArray.contains('Renewal Licence')) {
                         datatoshowArray.add('datepicker');
                         datatoshowArray.add('motorlicence');
-                        datatoshowArray.add('medicaldoc');
+                        // datatoshowArray.add('medicaldoc');
                       }
                       if (tmpArray.contains('Change of Biomatrics')) {
                         datatoshowArray.add('motorlicence');
@@ -1373,12 +1373,12 @@ class _HomepageState extends State<Homepage> {
                       }
                       if (tmpArray.contains('Endorsment Permanent Licence')) {
                         datatoshowArray.add('motorlicence');
-                        datatoshowArray.add('medicaldoc');
+                        // datatoshowArray.add('medicaldoc');
                         datatoshowArray.add('learndoc');
                       }
                       if (tmpArray.contains('International MDL')) {
                         datatoshowArray.add('motorlicence');
-                        datatoshowArray.add('medicaldoc');
+                        // datatoshowArray.add('medicaldoc');
                         datatoshowArray.add('passport');
                         datatoshowArray.add('visa');
                       }
