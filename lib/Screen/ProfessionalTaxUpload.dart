@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 import 'dart:math';
 
@@ -7,6 +8,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:intl/intl.dart';
+import 'package:razorpay_flutter/razorpay_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../main.dart';
@@ -32,12 +35,13 @@ class _ProfessionaltaxState extends State<Professionaltax> {
   Random random = new Random();
   String samount;
   int transid;
-  String taxirate;
-  String goodsrate;
-  String busrate;
+  int taxirate = 0;
+  int goodsrate = 0;
+  int busrate = 0;
   bool taxivalue = false;
   bool goodstruckvalue = false;
   bool busvalue = false;
+  Razorpay _razorpay;
 
   // Map<String, bool> values = {
   //   "Taxi": false,
@@ -55,6 +59,15 @@ class _ProfessionaltaxState extends State<Professionaltax> {
   //   });
   //   print(tmpArray);
   // }
+
+  @override
+  void initState() {
+    super.initState();
+    _razorpay = Razorpay();
+    _razorpay.on(Razorpay.EVENT_PAYMENT_SUCCESS, _handlePaymentSuccess);
+    _razorpay.on(Razorpay.EVENT_PAYMENT_ERROR, _handlePaymentError);
+    _razorpay.on(Razorpay.EVENT_EXTERNAL_WALLET, _handleExternalWallet);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -107,7 +120,7 @@ class _ProfessionaltaxState extends State<Professionaltax> {
                     focusedBorder: OutlineInputBorder(
                         borderSide:
                             BorderSide(color: Theme.of(context).primaryColor)),
-                    hintText: 'Customer No.'),
+                    hintText: 'Applicant No.'),
               ),
             ],
           ),
@@ -250,42 +263,52 @@ class _ProfessionaltaxState extends State<Professionaltax> {
                         onChanged: (bool value) {
                           setState(() {
                             taxivalue = value;
+                            if (!taxivalue) {
+                              taxirate = 0;
+                              _taxicontroller.clear();
+                            }
                           });
                         }),
                   ),
-                  Expanded(
-                    child: Padding(
-                      padding: const EdgeInsets.all(5.0),
-                      child: TextField(
-                        controller: _taxicontroller,
-                        keyboardType: TextInputType.number,
-                        inputFormatters: <TextInputFormatter>[
-                          WhitelistingTextInputFormatter.digitsOnly
-                        ],
-                        onChanged: (texts) {
-                          int text = int.parse(texts);
-                          if (text == 1) {
-                            taxirate = '1000';
-                          } else if (text > 1) {
-                            taxirate = '2500';
-                          }
-                          print(taxirate);
-                        },
-                        style: TextStyle(
-                            color: Theme.of(context).primaryColor,
-                            fontSize: 15),
-                        decoration: InputDecoration(
-                            contentPadding: EdgeInsets.all(10),
-                            enabledBorder: OutlineInputBorder(
-                                borderSide: BorderSide(
-                                    color: Theme.of(context).primaryColor)),
-                            focusedBorder: OutlineInputBorder(
-                                borderSide: BorderSide(
-                                    color: Theme.of(context).primaryColor)),
-                            hintText: 'Enter Taxi Count.'),
-                      ),
-                    ),
-                  ),
+                  !taxivalue
+                      ? Container()
+                      : Expanded(
+                          child: Padding(
+                            padding: const EdgeInsets.all(5.0),
+                            child: TextField(
+                              controller: _taxicontroller,
+                              keyboardType: TextInputType.number,
+                              inputFormatters: <TextInputFormatter>[
+                                WhitelistingTextInputFormatter.digitsOnly
+                              ],
+                              onChanged: (texts) {
+                                int text = int.parse(texts);
+                                if (text == 0) {
+                                  taxirate = 0;
+                                } else if (text == 1) {
+                                  taxirate = 1000;
+                                } else if (text > 1) {
+                                  taxirate = 2500;
+                                }
+                                print(taxirate);
+                              },
+                              style: TextStyle(
+                                  color: Theme.of(context).primaryColor,
+                                  fontSize: 15),
+                              decoration: InputDecoration(
+                                  contentPadding: EdgeInsets.all(10),
+                                  enabledBorder: OutlineInputBorder(
+                                      borderSide: BorderSide(
+                                          color:
+                                              Theme.of(context).primaryColor)),
+                                  focusedBorder: OutlineInputBorder(
+                                      borderSide: BorderSide(
+                                          color:
+                                              Theme.of(context).primaryColor)),
+                                  hintText: 'Enter Taxi Count.'),
+                            ),
+                          ),
+                        ),
                 ],
               ),
               Row(
@@ -300,40 +323,51 @@ class _ProfessionaltaxState extends State<Professionaltax> {
                         onChanged: (bool value) {
                           setState(() {
                             goodstruckvalue = value;
+                            if (!goodstruckvalue) {
+                              goodsrate = 0;
+                              _truckcontroller.clear();
+                            }
                           });
                         }),
                   ),
-                  Expanded(
-                    child: Padding(
-                      padding: const EdgeInsets.all(5.0),
-                      child: TextField(
-                        controller: _truckcontroller,
-                        keyboardType: TextInputType.number,
-                        inputFormatters: <TextInputFormatter>[
-                          WhitelistingTextInputFormatter.digitsOnly
-                        ],
-                        onChanged: (text) {
-                          if (text.contains('1')) {
-                            goodsrate = '1500';
-                          } else {
-                            goodsrate = '2500';
-                          }
-                        },
-                        style: TextStyle(
-                            color: Theme.of(context).primaryColor,
-                            fontSize: 15),
-                        decoration: InputDecoration(
-                            contentPadding: EdgeInsets.all(10),
-                            enabledBorder: OutlineInputBorder(
-                                borderSide: BorderSide(
-                                    color: Theme.of(context).primaryColor)),
-                            focusedBorder: OutlineInputBorder(
-                                borderSide: BorderSide(
-                                    color: Theme.of(context).primaryColor)),
-                            hintText: 'Enter Truck Count.'),
-                      ),
-                    ),
-                  ),
+                  !goodstruckvalue
+                      ? Container()
+                      : Expanded(
+                          child: Padding(
+                            padding: const EdgeInsets.all(5.0),
+                            child: TextField(
+                              controller: _truckcontroller,
+                              keyboardType: TextInputType.number,
+                              inputFormatters: <TextInputFormatter>[
+                                WhitelistingTextInputFormatter.digitsOnly
+                              ],
+                              onChanged: (texts) {
+                                int text = int.parse(texts);
+                                if (text == 0) {
+                                  goodsrate = 0;
+                                } else if (text == 1) {
+                                  goodsrate = 1500;
+                                } else if (text > 1) {
+                                  goodsrate = 2500;
+                                }
+                              },
+                              style: TextStyle(
+                                  color: Theme.of(context).primaryColor,
+                                  fontSize: 15),
+                              decoration: InputDecoration(
+                                  contentPadding: EdgeInsets.all(10),
+                                  enabledBorder: OutlineInputBorder(
+                                      borderSide: BorderSide(
+                                          color:
+                                              Theme.of(context).primaryColor)),
+                                  focusedBorder: OutlineInputBorder(
+                                      borderSide: BorderSide(
+                                          color:
+                                              Theme.of(context).primaryColor)),
+                                  hintText: 'Enter Truck Count.'),
+                            ),
+                          ),
+                        ),
                 ],
               ),
               Row(
@@ -347,40 +381,52 @@ class _ProfessionaltaxState extends State<Professionaltax> {
                         onChanged: (bool value) {
                           setState(() {
                             busvalue = value;
+                            if (!busvalue) {
+                              busrate = 0;
+                              _buscontroller.clear();
+                            }
                           });
                         }),
                   ),
-                  Expanded(
-                    child: Padding(
-                      padding: const EdgeInsets.all(5.0),
-                      child: TextField(
-                        controller: _buscontroller,
-                        keyboardType: TextInputType.number,
-                        inputFormatters: <TextInputFormatter>[
-                          WhitelistingTextInputFormatter.digitsOnly
-                        ],
-                        onChanged: (text) {
-                          if (text.contains('1')) {
-                            busrate = '1500';
-                          } else {
-                            busrate = '2500';
-                          }
-                        },
-                        style: TextStyle(
-                            color: Theme.of(context).primaryColor,
-                            fontSize: 15),
-                        decoration: InputDecoration(
-                            contentPadding: EdgeInsets.all(10),
-                            enabledBorder: OutlineInputBorder(
-                                borderSide: BorderSide(
-                                    color: Theme.of(context).primaryColor)),
-                            focusedBorder: OutlineInputBorder(
-                                borderSide: BorderSide(
-                                    color: Theme.of(context).primaryColor)),
-                            hintText: 'Enter Bus Count.'),
-                      ),
-                    ),
-                  ),
+                  !busvalue
+                      ? Container()
+                      : Expanded(
+                          child: Padding(
+                            padding: const EdgeInsets.all(5.0),
+                            child: TextField(
+                              controller: _buscontroller,
+                              keyboardType: TextInputType.number,
+                              inputFormatters: <TextInputFormatter>[
+                                WhitelistingTextInputFormatter.digitsOnly
+                              ],
+                              onChanged: (texts) {
+                                int text = int.parse(texts);
+                                if (text == 0) {
+                                  busrate = 0;
+                                }
+                                if (text == 1) {
+                                  busrate = 1500;
+                                } else if (text > 1) {
+                                  busrate = 2500;
+                                }
+                              },
+                              style: TextStyle(
+                                  color: Theme.of(context).primaryColor,
+                                  fontSize: 15),
+                              decoration: InputDecoration(
+                                  contentPadding: EdgeInsets.all(10),
+                                  enabledBorder: OutlineInputBorder(
+                                      borderSide: BorderSide(
+                                          color:
+                                              Theme.of(context).primaryColor)),
+                                  focusedBorder: OutlineInputBorder(
+                                      borderSide: BorderSide(
+                                          color:
+                                              Theme.of(context).primaryColor)),
+                                  hintText: 'Enter Bus Count.'),
+                            ),
+                          ),
+                        ),
                 ],
               ),
               //   GridView.count(
@@ -418,7 +464,7 @@ class _ProfessionaltaxState extends State<Professionaltax> {
           onPressed: () {
             // getCheckboxItems();
             if (_applicantcontroller.text == '') {
-              _showtoast('Please enter customer no');
+              _showtoast('Please enter applicant no');
               // } else if (tmpArray.isEmpty) {
               //   _showtoast("Please select any vehicle first!!");
             } else if (!taxivalue && !goodstruckvalue && !busvalue) {
@@ -433,21 +479,21 @@ class _ProfessionaltaxState extends State<Professionaltax> {
               _showtoast('Please select pancard');
             } else {
               if (taxivalue) {
-                tmpArray.add('Taxi' + '_' + taxirate);
+                tmpArray.add('Taxi' + '_' + taxirate.toString());
               }
               if (goodstruckvalue) {
-                tmpArray.add('Goods truck' + '_' + goodsrate);
+                tmpArray.add('Goods truck' + '_' + goodsrate.toString());
               }
               if (busvalue) {
-                tmpArray.add('Bus' + '_' +busrate);
+                tmpArray.add('Bus' + '_' + busrate.toString());
               }
-              _uploaddata();
+              _uploaddata((taxirate + goodsrate + busrate).toString());
             }
           },
           shape: new RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(5)),
           child: Text(
-            'Submit',
+            'Pay ' + (taxirate + goodsrate + busrate).toString(),
             textAlign: TextAlign.center,
             style: TextStyle(
               color: Colors.white,
@@ -460,7 +506,7 @@ class _ProfessionaltaxState extends State<Professionaltax> {
     );
   }
 
-  _uploaddata() async {
+  _uploaddata(String amount) async {
     setState(() {
       transid = random.nextInt(100000);
     });
@@ -480,9 +526,230 @@ class _ProfessionaltaxState extends State<Professionaltax> {
         await Dio().post('https://rto24x7.com/api/form_new/', data: formData);
     setState(() => _loading = false);
     response.statusCode == 200
-        ? _admindailog()
+        ? _openCheckout(amount)
         : _scaffoldKey.currentState
             .showSnackBar(new SnackBar(content: Text('Something went wrong')));
+  }
+
+  void _openCheckout(String amount) async {
+    setState(() {
+      samount = amount;
+    });
+    double payamount = (double.parse(amount) * 100);
+    print(payamount);
+    var options = {
+      'key': 'rzp_live_8bac7CqJHegwls',
+      'amount': payamount,
+      'name': name,
+      'description': widget.title,
+      'prefill': {'contact': mobile, 'email': emailid},
+    };
+
+    try {
+      _razorpay.open(options);
+    } catch (e) {
+      debugPrint(e);
+    }
+  }
+
+  void _handlePaymentSuccess(PaymentSuccessResponse response) async {
+    var now = new DateTime.now();
+    var currentdate = new DateFormat('dd-MM-yyyy');
+    var currentime = new DateFormat.jm().format(now);
+    String formattedDate = currentdate.format(now);
+    _paymentdailog(response.paymentId, 'Thank You!',
+        'Your transaction was successful', formattedDate, currentime, 'Sucess');
+    FormData tformData = FormData.fromMap({
+      "new_t_id": response.paymentId,
+      "t_id": transid,
+    });
+    print(tformData.fields);
+    final transresponse = await Dio()
+        .post('https://rto24x7.com/api/payment_status/', data: tformData);
+
+    Map<String, dynamic> user = jsonDecode(transresponse.data);
+    if (user['result'] == 'Success') {
+      Navigator.of(context).popUntil((route) => route.isFirst);
+      Navigator.pushReplacement(context,
+          MaterialPageRoute(builder: (BuildContext ctx) => DashBoard()));
+    }
+  }
+
+  void _handlePaymentError(PaymentFailureResponse response) {
+    var now = new DateTime.now();
+    var currentdate = new DateFormat('dd-MM-yyyy');
+    var currentime = new DateFormat.jm().format(now);
+    _paymenterrordailog(currentdate, currentime);
+  }
+
+  void _handleExternalWallet(ExternalWalletResponse response) {
+    var now = new DateTime.now();
+    var currentdate = new DateFormat('dd-MM-yyyy');
+    var currentime = new DateFormat.jm().format(now);
+    _paymenterrordailog(currentdate, currentime);
+  }
+
+  _paymentdailog(transid, title, msg, date, time, status) {
+    showDialog(
+        // barrierColor: Theme.of(context).primaryColor,
+        useSafeArea: true,
+        context: context,
+        builder: (BuildContext context) {
+          return Dialog(
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(15))),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    Container(height: 10),
+                    Text(
+                      title,
+                      style: TextStyle(
+                          fontSize: 20,
+                          color: title.contains('Pending')
+                              ? Theme.of(context).primaryColor
+                              : Colors.green),
+                    ),
+                    Text(
+                      msg,
+                      style: TextStyle(fontSize: 16),
+                    ),
+                    Divider(
+                      color: Colors.black,
+                    ),
+                    Container(height: 5),
+                    ListTile(
+                      title: Text(
+                        'DATE',
+                      ),
+                      subtitle: Text(date),
+                      trailing: Column(
+                        children: [
+                          Text(
+                            'TIME',
+                            style: TextStyle(fontSize: 16),
+                          ),
+                          Text(time, style: TextStyle(color: Colors.black54)),
+                        ],
+                      ),
+                    ),
+                    ListTile(
+                      title: Text('Service name'),
+                      subtitle: Text(widget.title),
+                      trailing: Image.asset("assets/images/rto_image.png",
+                          width: 30, height: 30),
+                    ),
+                    ListTile(
+                      dense: true,
+                      title: Text('AMOUNT'),
+                      subtitle: Text(
+                        samount,
+                        style: TextStyle(fontSize: 20, color: Colors.black),
+                      ),
+                      trailing: Text(status),
+                    ),
+                    Container(
+                      height: 50,
+                      child: Center(child: Text('Transaction id : ' + transid)),
+                    ),
+                    Container(
+                      height: 10,
+                    )
+                  ],
+                ),
+              ],
+            ),
+          );
+        });
+  }
+
+  _paymenterrordailog(date, time) {
+    showDialog(
+        // barrierColor: Theme.of(context).primaryColor,
+        useSafeArea: true,
+        context: context,
+        builder: (BuildContext context) {
+          return Dialog(
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(15))),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    Container(height: 10),
+                    Text(
+                      'Failed',
+                      style: TextStyle(
+                          fontSize: 20, color: Theme.of(context).primaryColor),
+                    ),
+                    Text(
+                      'Your payment failed try again!!',
+                      style: TextStyle(fontSize: 16),
+                    ),
+                    Divider(
+                      color: Colors.black,
+                    ),
+                    Container(height: 5),
+                    ListTile(
+                      title: Text(
+                        'DATE',
+                      ),
+                      subtitle: Text(date.toString()),
+                      trailing: Column(
+                        children: [
+                          Text(
+                            'TIME',
+                            style: TextStyle(fontSize: 16),
+                          ),
+                          Text(time, style: TextStyle(color: Colors.black54)),
+                        ],
+                      ),
+                    ),
+                    ListTile(
+                      title: Text('Service name'),
+                      subtitle: Text(widget.title),
+                      trailing: Image.asset("assets/images/rto_image.png",
+                          width: 30, height: 30),
+                    ),
+                    ListTile(
+                      dense: true,
+                      title: Text('AMOUNT'),
+                      subtitle: Text(
+                        samount,
+                        style: TextStyle(fontSize: 20, color: Colors.black),
+                      ),
+                      trailing: Column(
+                        children: [
+                          Text('Pending'),
+                        ],
+                      ),
+                    ),
+                    RaisedButton(
+                        child: Text(
+                          'Retry',
+                          style: TextStyle(color: Colors.white),
+                        ),
+                        color: Theme.of(context).primaryColor,
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                          _scaffoldKey.currentState.showSnackBar(
+                              new SnackBar(content: Text('Please Wait')));
+                          _openCheckout(samount);
+                        }),
+                    Container(
+                      height: 10,
+                    )
+                  ],
+                ),
+              ],
+            ),
+          );
+        });
   }
 
   _admindailog() {
