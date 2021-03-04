@@ -326,12 +326,14 @@ class _SignupState extends State<Signup> {
                                     new SnackBar(
                                         content:
                                             Text("Please enter correct name")));
-                              } else if (_emailcontroller.text == "") {
-                                _scaffoldKey.currentState.showSnackBar(
-                                    new SnackBar(
-                                        content: Text(
-                                            "Please enter correct email")));
-                              } else if (_mobController.text.length == 0) {
+                              } 
+                              // else if (_emailcontroller.text == "") {
+                              //   _scaffoldKey.currentState.showSnackBar(
+                              //       new SnackBar(
+                              //           content: Text(
+                              //               "Please enter correct email")));
+                              // }
+                               else if (_mobController.text.length == 0) {
                                 _scaffoldKey.currentState.showSnackBar(
                                     new SnackBar(
                                         content: Text(
